@@ -10,7 +10,9 @@
     "seed": "node --env-file=.env.local scripts/seed.ts"
   },
   "dependencies": {
+    "@vercel/analytics": "^2.0.1",
     "@vercel/blob": "^2.5.0",
+    "@vercel/speed-insights": "^2.0.0",
     "firebase": "^12.15.0",
     "firebase-admin": "^14.1.0",
     "motion": "^12.42.0",
