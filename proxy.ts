@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { SESSION_COOKIE_NAME } from "@/lib/admin/constants";
 
-export function middleware(request: NextRequest) {
+// Next 16 renombró la convención `middleware` → `proxy` (misma API).
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const hasSession = Boolean(request.cookies.get(SESSION_COOKIE_NAME)?.value);
   const isLogin = pathname === "/admin/login";
