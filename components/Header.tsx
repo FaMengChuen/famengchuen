@@ -4,43 +4,38 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion } from "motion/react";
 import { WhatsAppIcon } from "./icons";
-import { wa, WA_MESSAGES, EXTERNAL } from "@/lib/site";
+import { EXTERNAL, whatsappUrl } from "@/lib/site";
+import { DEFAULT_SITE_CONFIG } from "@/lib/cms/default-content";
+import type { SiteConfig } from "@/lib/cms/types";
 
-const NAV = [
-  { label: "Modalidades", href: "#modalidades" },
-  { label: "Programas", href: "#programas" },
-  { label: "Maestro", href: "#maestro" },
-  { label: "Escuela", href: "#comunidad" },
-  { label: "Precios", href: "#precios" },
-  { label: "Tienda", href: "#tienda" },
-];
-
-function Wordmark() {
+function Wordmark({ site }: { site: SiteConfig }) {
   return (
     <a href="#top" className="flex shrink-0 items-center gap-[13px]">
       <Image
-        src="/assets/logo.png"
-        alt="Fa Meng Chuen"
-        width={48}
-        height={48}
+        src={site.logo.src}
+        alt={site.logo.alt}
+        width={site.logo.width ?? 48}
+        height={site.logo.height ?? 48}
         priority
         className="h-12 w-12 object-contain"
       />
       <span className="flex flex-col leading-none">
         <span className="font-display text-[19px] tracking-[0.06em] text-cream">
-          FA MENG CHUEN
+          {site.brandName.toUpperCase()}
         </span>
         <span className="mt-[3px] font-label text-[9.5px] tracking-[0.42em] text-dim">
-          KUNG FU · WUSHU
+          {site.brandEyebrow.toUpperCase()}
         </span>
       </span>
     </a>
   );
 }
 
-export function Header() {
+export function Header({ site = DEFAULT_SITE_CONFIG }: { site?: SiteConfig }) {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const nav = site.navigation.filter((item) => item.visible).sort((a, b) => a.order - b.order);
+  const reserveUrl = whatsappUrl(site.phone, site.whatsappMessages.reservar);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -69,11 +64,11 @@ export function Header() {
           borderColor: scrolled ? "rgba(244,241,234,.1)" : "transparent",
         }}
       >
-        <Wordmark />
+        <Wordmark site={site} />
 
         <nav className="flex items-center justify-end gap-[clamp(14px,2vw,30px)]">
           <div className="hidden items-center justify-end gap-[clamp(14px,2vw,30px)] min-[901px]:flex">
-            {NAV.map((item) => (
+            {nav.map((item) => (
               <a
                 key={item.href}
                 href={item.href}
@@ -83,7 +78,7 @@ export function Header() {
               </a>
             ))}
             <a
-              href={wa(WA_MESSAGES.reservar)}
+              href={reserveUrl}
               {...EXTERNAL}
               className="inline-flex items-center gap-2 rounded-[2px] bg-red px-5 py-[11px] font-label text-[13px] font-semibold uppercase tracking-[0.08em] text-white transition hover:-translate-y-px hover:bg-red-hi"
             >
@@ -123,7 +118,7 @@ export function Header() {
               ×
             </button>
 
-            {NAV.map((item, i) => (
+            {nav.map((item, i) => (
               <motion.a
                 key={item.href}
                 href={item.href}
@@ -138,13 +133,13 @@ export function Header() {
             ))}
 
             <motion.a
-              href={wa(WA_MESSAGES.reservar)}
+              href={reserveUrl}
               {...EXTERNAL}
               onClick={() => setMenuOpen(false)}
               className="mt-[18px] inline-flex items-center gap-[9px] rounded-[2px] bg-red px-7 py-[15px] font-label text-[15px] font-semibold uppercase tracking-[0.08em] text-white"
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.06 + NAV.length * 0.05 }}
+              transition={{ duration: 0.4, delay: 0.06 + nav.length * 0.05 }}
             >
               <WhatsAppIcon size={18} />
               Reservar por WhatsApp

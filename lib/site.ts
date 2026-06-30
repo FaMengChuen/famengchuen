@@ -27,7 +27,11 @@ export const WA_MESSAGES = {
 
 /** Construye una URL de WhatsApp (wa.me) con el mensaje opcional ya codificado. */
 export function wa(message?: string): string {
-  const base = `https://wa.me/${PHONE}`;
+  return whatsappUrl(PHONE, message);
+}
+
+export function whatsappUrl(phone: string, message?: string): string {
+  const base = `https://wa.me/${phone}`;
   return message ? `${base}?text=${encodeURIComponent(message)}` : base;
 }
 
