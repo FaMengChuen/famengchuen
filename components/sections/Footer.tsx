@@ -87,9 +87,22 @@ export function Footer({ site = DEFAULT_SITE_CONFIG }: { site?: SiteConfig }) {
         </div>
       </div>
 
-      <div className="mx-auto mt-9 flex max-w-content flex-wrap justify-between gap-3 border-t border-[rgba(244,241,234,.08)] pt-6 text-[12.5px] text-faint">
+      <div className="mx-auto mt-9 flex max-w-content flex-wrap items-center justify-between gap-x-6 gap-y-2 border-t border-[rgba(244,241,234,.08)] pt-6 text-[12.5px] text-faint">
         <span>{`© ${year} Asociación ${site.brandName} · Miraflores, Lima — Perú`}</span>
-        <span>{site.footerSignature}</span>
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+          <span>{site.footerSignature}</span>
+          <span aria-hidden className="opacity-50">
+            ·
+          </span>
+          <a
+            href="https://mathyusolutions.com/es/"
+            {...EXTERNAL}
+            className="transition-colors hover:text-gold"
+          >
+            Desarrollado por{" "}
+            <span className="font-medium text-dim">Mathyu&rsquo;s Solutions</span>
+          </a>
+        </div>
       </div>
     </footer>
   );

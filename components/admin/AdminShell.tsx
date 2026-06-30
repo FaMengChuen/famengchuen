@@ -94,6 +94,18 @@ export function AdminShell({
       </header>
 
       <main className="mx-auto max-w-[1100px] px-5 py-8">{children}</main>
+
+      <footer className="mx-auto max-w-[1100px] px-5 pb-8 text-center font-label text-[11px] uppercase tracking-[0.08em] text-dim">
+        Desarrollado por{" "}
+        <a
+          href="https://mathyusolutions.com/es/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-gold transition-colors hover:text-cream"
+        >
+          Mathyu&rsquo;s Solutions
+        </a>
+      </footer>
     </div>
   );
 }
