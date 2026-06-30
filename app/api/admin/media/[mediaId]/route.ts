@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ZodError } from "zod";
+import { del } from "@vercel/blob";
 import { writeAuditLog } from "@/lib/admin/audit";
 import { adminAuthErrorResponse, requireAdminUser } from "@/lib/admin/auth";
 import { COLLECTIONS } from "@/lib/cms/repository";
+import type { MediaAsset } from "@/lib/cms/types";
 import { mediaUpdateSchema } from "@/lib/cms/validation";
 import { getAdminDb, serverTimestamp } from "@/lib/firebase/admin";
 
@@ -39,6 +41,33 @@ export async function PUT(request: NextRequest, context: RouteContext) {
       return NextResponse.json({ error: "Datos inválidos.", issues: error.issues }, { status: 400 });
     }
 
+    return adminAuthErrorResponse(error);
+  }
+}
+
+export async function DELETE(_request: NextRequest, context: RouteContext) {
+  try {
+    const actor = await requireAdminUser();
+    const db = getAdminDb();
+    if (!db) {
+      return NextResponse.json({ error: "Firebase Admin no está configurado." }, { status: 503 });
+    }
+
+    const { mediaId } = await context.params;
+    const docRef = db.collection(COLLECTIONS.media).doc(mediaId);
+    const snapshot = await docRef.get();
+    const asset = snapshot.data() as MediaAsset | undefined;
+
+    // Borra el archivo en Vercel Blob (si tiene URL) antes que el documento.
+    if (asset?.downloadURL?.includes("blob.vercel-storage.com")) {
+      await del(asset.downloadURL).catch(() => undefined);
+    }
+
+    await docRef.delete();
+    await writeAuditLog(actor, "media.delete", `media/${mediaId}`);
+
+    return NextResponse.json({ ok: true });
+  } catch (error) {
     return adminAuthErrorResponse(error);
   }
 }

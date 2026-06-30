@@ -19,6 +19,10 @@ export async function GET() {
   }
 }
 
+/**
+ * Registra en Firestore un medio ya subido a Vercel Blob desde el navegador.
+ * El cliente envía la URL pública del blob, su ruta, tipo y tamaño.
+ */
 export async function POST(request: NextRequest) {
   try {
     const actor = await requireAdminUser();

@@ -24,9 +24,10 @@ function HighlightedTitle({ title, accent }: { title: string; accent?: string })
     <>
       {title.split("\n").map((line, index) => {
         const accentIndex = accent ? line.toLowerCase().lastIndexOf(accent.toLowerCase()) : -1;
+        const accentLen = accent?.length ?? 0;
         const before = accentIndex >= 0 ? line.slice(0, accentIndex) : line;
-        const match = accentIndex >= 0 ? line.slice(accentIndex, accentIndex + accent.length) : "";
-        const after = accentIndex >= 0 ? line.slice(accentIndex + accent.length) : "";
+        const match = accentIndex >= 0 ? line.slice(accentIndex, accentIndex + accentLen) : "";
+        const after = accentIndex >= 0 ? line.slice(accentIndex + accentLen) : "";
 
         return (
           <span key={`${line}-${index}`}>

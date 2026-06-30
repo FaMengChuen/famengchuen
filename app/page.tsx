@@ -1,36 +1,20 @@
-import { IntroProvider } from "@/components/IntroProvider";
-import { Header } from "@/components/Header";
-import { FloatingWhatsApp } from "@/components/FloatingWhatsApp";
-import { Hero } from "@/components/sections/Hero";
-import { TrustStrip } from "@/components/sections/TrustStrip";
-import { Equipo } from "@/components/sections/Equipo";
-import { Modalidades } from "@/components/sections/Modalidades";
-import { Programas } from "@/components/sections/Programas";
-import { Maestro } from "@/components/sections/Maestro";
-import { Comunidad } from "@/components/sections/Comunidad";
-import { Precios } from "@/components/sections/Precios";
-import { Tienda } from "@/components/sections/Tienda";
-import { Contacto } from "@/components/sections/Contacto";
-import { Footer } from "@/components/sections/Footer";
+import type { Metadata } from "next";
+import { PageView } from "@/components/PageView";
+import { getFallbackHomeContent, getPublicPageContent } from "@/lib/cms/repository";
 
-export default function Home() {
-  return (
-    <IntroProvider>
-      <Header />
-      <main>
-        <Hero />
-        <TrustStrip />
-        <Equipo />
-        <Modalidades />
-        <Programas />
-        <Maestro />
-        <Comunidad />
-        <Precios />
-        <Tienda />
-        <Contacto />
-      </main>
-      <Footer />
-      <FloatingWhatsApp />
-    </IntroProvider>
-  );
+// El contenido vive en el CMS y se publica al guardar, por eso renderizamos
+// en cada request en lugar de generar la página estática en build.
+export const dynamic = "force-dynamic";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const content = (await getPublicPageContent("home")) ?? getFallbackHomeContent();
+  return {
+    title: content.page.seoTitle || content.page.title,
+    description: content.page.seoDescription,
+  };
+}
+
+export default async function Home() {
+  const content = (await getPublicPageContent("home")) ?? getFallbackHomeContent();
+  return <PageView content={content} />;
 }

@@ -9,7 +9,11 @@ type ServiceAccountInput = {
   privateKey: string;
 };
 
-let firestoreSettingsApplied = false;
+// Flag en globalThis para que sobreviva al hot-reload de Next en dev (los
+// módulos se recargan pero la instancia de Firestore persiste cacheada en la
+// app de firebase-admin, así que settings() solo puede llamarse una vez).
+const FIRESTORE_FLAG = Symbol.for("fmc.firestoreSettingsApplied");
+const globalFlags = globalThis as unknown as Record<symbol, boolean>;
 
 function readServiceAccount(): ServiceAccountInput | null {
   const raw = process.env.FIREBASE_SERVICE_ACCOUNT_KEY;
@@ -99,9 +103,13 @@ export function getAdminDb() {
   }
 
   const db = getFirestore(app);
-  if (!firestoreSettingsApplied) {
-    db.settings({ ignoreUndefinedProperties: true });
-    firestoreSettingsApplied = true;
+  if (!globalFlags[FIRESTORE_FLAG]) {
+    try {
+      db.settings({ ignoreUndefinedProperties: true });
+    } catch {
+      // Ya estaba configurada (instancia reutilizada tras un hot-reload).
+    }
+    globalFlags[FIRESTORE_FLAG] = true;
   }
   return db;
 }

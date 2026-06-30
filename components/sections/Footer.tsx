@@ -1,5 +1,7 @@
 import Image from "next/image";
-import { LINKS, PHONE_DISPLAY, wa, EXTERNAL } from "@/lib/site";
+import { EXTERNAL, whatsappUrl } from "@/lib/site";
+import { DEFAULT_SITE_CONFIG } from "@/lib/cms/default-content";
+import type { SiteConfig } from "@/lib/cms/types";
 
 const COLUMNS = [
   {
@@ -23,32 +25,32 @@ const COLUMNS = [
 
 const LINK_CLASS = "block text-[14px] text-dim transition-colors hover:text-white";
 
-export function Footer() {
+export function Footer({ site = DEFAULT_SITE_CONFIG }: { site?: SiteConfig }) {
+  const phoneUrl = whatsappUrl(site.phone);
+  const year = new Date().getFullYear();
+
   return (
     <footer className="border-t border-[rgba(244,241,234,.08)] bg-footer px-[clamp(20px,5vw,56px)] pb-9 pt-[clamp(44px,6vw,72px)]">
       <div className="mx-auto flex max-w-content flex-wrap items-start justify-between gap-[30px]">
         <div className="max-w-[340px]">
           <div className="mb-4 flex items-center gap-[13px]">
             <Image
-              src="/assets/logo.png"
-              alt="Fa Meng Chuen"
+              src={site.logo.src}
+              alt={site.logo.alt}
               width={46}
               height={46}
               className="h-[46px] w-[46px] shrink-0 object-contain"
             />
             <span className="flex flex-col leading-none">
               <span className="font-display text-[18px] tracking-[0.06em]">
-                FA MENG CHUEN
+                {site.brandName.toUpperCase()}
               </span>
               <span className="mt-[3px] font-label text-[9px] tracking-[0.4em] text-dim">
-                ASOCIACIÓN · KUNG FU · WUSHU
+                {`ASOCIACIÓN · ${site.brandEyebrow}`.toUpperCase()}
               </span>
             </span>
           </div>
-          <p className="m-0 text-[13.5px] leading-[1.6] text-dimmer">
-            Arte marcial tradicional chino · Deportes de contacto · Cultura
-            oriental. Cuerpo, mente y espíritu en armonía.
-          </p>
+          <p className="m-0 text-[13.5px] leading-[1.6] text-dimmer">{site.footerText}</p>
         </div>
 
         <div className="flex flex-wrap gap-[clamp(36px,6vw,72px)]">
@@ -71,13 +73,13 @@ export function Footer() {
               Contacto
             </div>
             <div className="flex flex-col gap-[9px]">
-              <a href={wa()} {...EXTERNAL} className={LINK_CLASS}>
-                {PHONE_DISPLAY}
+              <a href={phoneUrl} {...EXTERNAL} className={LINK_CLASS}>
+                {site.phoneDisplay}
               </a>
-              <a href={LINKS.instagram} {...EXTERNAL} className={LINK_CLASS}>
+              <a href={site.links.instagram} {...EXTERNAL} className={LINK_CLASS}>
                 Instagram
               </a>
-              <a href={LINKS.facebook} {...EXTERNAL} className={LINK_CLASS}>
+              <a href={site.links.facebook} {...EXTERNAL} className={LINK_CLASS}>
                 Facebook
               </a>
             </div>
@@ -86,8 +88,8 @@ export function Footer() {
       </div>
 
       <div className="mx-auto mt-9 flex max-w-content flex-wrap justify-between gap-3 border-t border-[rgba(244,241,234,.08)] pt-6 text-[12.5px] text-faint">
-        <span>© 2026 Asociación Fa Meng Chuen · Miraflores, Lima — Perú</span>
-        <span>武術之道 · El camino del arte marcial</span>
+        <span>{`© ${year} Asociación ${site.brandName} · Miraflores, Lima — Perú`}</span>
+        <span>{site.footerSignature}</span>
       </div>
     </footer>
   );

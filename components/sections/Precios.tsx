@@ -1,52 +1,13 @@
 import { Reveal } from "../Reveal";
 import { Kicker } from "../Kicker";
-import { wa, WA_MESSAGES, EXTERNAL } from "@/lib/site";
+import { EXTERNAL, whatsappUrl } from "@/lib/site";
+import { DEFAULT_HOME_SECTIONS, DEFAULT_SITE_CONFIG } from "@/lib/cms/default-content";
+import type { PricingGridSectionData, SiteConfig } from "@/lib/cms/types";
 
-type Plan = {
-  kicker: string;
-  title: string;
-  price: string;
-  unit: string;
-  text: string;
-  ctaLabel: string;
-  href: string;
-  variant: "outline" | "red";
-  featured?: boolean;
-};
+const DEFAULT_PRECIOS = DEFAULT_HOME_SECTIONS.find((section) => section.type === "pricingGrid")
+  ?.data as PricingGridSectionData;
 
-const PLANS: Plan[] = [
-  {
-    kicker: "Mensualidad",
-    title: "Sanda",
-    price: "240",
-    unit: "/ mes",
-    text: "Boxeo chino de combate: golpes, patadas y derribos. Entrenamiento físico y técnico completo.",
-    ctaLabel: "Inscribirme",
-    href: wa(WA_MESSAGES.sanda),
-    variant: "outline",
-  },
-  {
-    kicker: "Mensualidad",
-    title: "Tai Chi",
-    price: "220",
-    unit: "/ mes",
-    text: "Movimiento consciente para salud, equilibrio y calma. Ideal para todas las edades y niveles.",
-    ctaLabel: "Inscribirme",
-    href: wa(WA_MESSAGES.taichi),
-    variant: "red",
-    featured: true,
-  },
-  {
-    kicker: "Por sesión",
-    title: "Clase libre",
-    price: "40",
-    unit: "/ clase",
-    text: "¿Quieres probar sin compromiso? Toma una clase suelta y vive el entrenamiento por un día.",
-    ctaLabel: "Reservar",
-    href: wa(WA_MESSAGES.claseLibre),
-    variant: "outline",
-  },
-];
+type Plan = PricingGridSectionData["plans"][number];
 
 const BTN = {
   outline:
@@ -54,7 +15,17 @@ const BTN = {
   red: "bg-red text-white transition hover:-translate-y-px hover:bg-red-hi",
 } as const;
 
-function PrecioCard({ plan, delay }: { plan: Plan; delay: number }) {
+function PrecioCard({
+  plan,
+  site,
+  delay,
+}: {
+  plan: Plan;
+  site: SiteConfig;
+  delay: number;
+}) {
+  const href = whatsappUrl(site.phone, site.whatsappMessages[plan.messageKey]);
+
   return (
     <Reveal
       as="article"
@@ -83,11 +54,9 @@ function PrecioCard({ plan, delay }: { plan: Plan; delay: number }) {
           {plan.unit}
         </span>
       </div>
-      <p className="mb-[22px] mt-4 text-[14.5px] leading-[1.55] text-muted">
-        {plan.text}
-      </p>
+      <p className="mb-[22px] mt-4 text-[14.5px] leading-[1.55] text-muted">{plan.text}</p>
       <a
-        href={plan.href}
+        href={href}
         {...EXTERNAL}
         className={`mt-auto inline-flex items-center justify-center gap-[9px] rounded-[2px] px-[18px] py-[13px] font-label text-[13.5px] font-medium uppercase tracking-[0.08em] ${BTN[plan.variant]}`}
       >
@@ -97,36 +66,44 @@ function PrecioCard({ plan, delay }: { plan: Plan; delay: number }) {
   );
 }
 
-export function Precios() {
+export function Precios({
+  data = DEFAULT_PRECIOS,
+  site = DEFAULT_SITE_CONFIG,
+  sectionId = "precios",
+}: {
+  data?: PricingGridSectionData;
+  site?: SiteConfig;
+  sectionId?: string;
+}) {
   return (
     <section
-      id="precios"
+      id={sectionId}
       className="relative overflow-hidden bg-alt px-[clamp(20px,5vw,56px)] py-[clamp(72px,9vw,128px)]"
     >
       <div className="mx-auto max-w-content">
         <Reveal className="mb-[clamp(40px,5vw,60px)] text-center">
           <Kicker both className="mb-4">
-            Planes y precios
+            {data.kicker}
           </Kicker>
           <h2 className="m-0 font-display text-[clamp(36px,5.5vw,68px)] font-normal uppercase leading-[0.95]">
-            Empieza a entrenar
+            {data.title}
           </h2>
           <p className="mx-auto mt-[18px] max-w-[46ch] text-[16.5px] leading-[1.6] text-muted">
-            Elige tu modalidad o prueba con una clase libre. Sin matrícula
-            sorpresa: escríbenos y coordinamos tu horario.
+            {data.description}
           </p>
         </Reveal>
 
         <div className="grid grid-cols-[repeat(auto-fit,minmax(270px,1fr))] items-stretch gap-[18px]">
-          {PLANS.map((plan, i) => (
-            <PrecioCard key={plan.title} plan={plan} delay={i * 0.08} />
+          {data.plans.map((plan, i) => (
+            <PrecioCard key={plan.title} plan={plan} site={site} delay={i * 0.08} />
           ))}
         </div>
 
-        <Reveal as="p" className="mx-auto mt-[26px] text-center text-[13.5px] text-dimmer">
-          ¿Consultas sobre Taolu, PAMVA o El Arte de Luchar? Escríbenos por
-          WhatsApp y te asesoramos.
-        </Reveal>
+        {data.footnote && (
+          <Reveal as="p" className="mx-auto mt-[26px] text-center text-[13.5px] text-dimmer">
+            {data.footnote}
+          </Reveal>
+        )}
       </div>
     </section>
   );

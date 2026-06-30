@@ -2,6 +2,7 @@
 
 import { motion } from "motion/react";
 import { useIntro } from "./IntroProvider";
+import { usePreviewMode } from "./PreviewMode";
 import { usePrefersReducedMotion } from "./usePrefersReducedMotion";
 
 type Tag = "div" | "section" | "article" | "figure" | "p" | "h1" | "h2" | "li";
@@ -32,10 +33,12 @@ export function Reveal({
   y = 36,
 }: RevealProps) {
   const reduce = usePrefersReducedMotion();
+  const preview = usePreviewMode();
   const { introDone } = useIntro();
 
-  // Render estático cuando el usuario prefiere menos movimiento (sin animación).
-  if (reduce) {
+  // Render estático cuando el usuario prefiere menos movimiento o cuando se
+  // renderiza dentro de la vista previa del panel (sin animación).
+  if (reduce || preview) {
     const StaticTag = as;
     return <StaticTag className={className}>{children}</StaticTag>;
   }

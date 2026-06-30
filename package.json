@@ -6,9 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "seed": "node --env-file=.env.local scripts/seed.ts"
   },
   "dependencies": {
+    "@vercel/blob": "^2.5.0",
     "firebase": "^12.15.0",
     "firebase-admin": "^14.1.0",
     "motion": "^12.42.0",
