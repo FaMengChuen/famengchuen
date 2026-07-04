@@ -106,6 +106,23 @@ async function getSiteConfig(): Promise<SiteConfig> {
   }
 }
 
+/** Config del sitio para el panel: sin la navegación derivada de páginas. */
+export async function getAdminSiteConfig(): Promise<SiteConfig> {
+  const db = getAdminDb();
+  if (!db) {
+    return DEFAULT_SITE_CONFIG;
+  }
+
+  try {
+    const doc = await db.collection(COLLECTIONS.site).doc("config").get();
+    const configured = doc.exists ? (serializeFirestoreValue(doc.data()) as Partial<SiteConfig>) : undefined;
+    return mergeSiteConfig(configured);
+  } catch (error) {
+    console.error("Unable to load site config from Firestore", error);
+    return DEFAULT_SITE_CONFIG;
+  }
+}
+
 async function getActiveProducts(): Promise<Product[]> {
   const db = getAdminDb();
   if (!db) {

@@ -9,6 +9,11 @@ const CARDS = [
   { href: "/admin/products", title: "Productos", desc: "Administra la tienda y los CTA a WhatsApp." },
   { href: "/admin/media", title: "Medios", desc: "Sube y administra imágenes del sitio." },
   { href: "/admin/users", title: "Usuarios", desc: "Invita administradores y gestiona accesos." },
+  {
+    href: "/admin/settings",
+    title: "Configuración",
+    desc: "Teléfono, mensajes de WhatsApp, redes y textos generales.",
+  },
 ];
 
 export default async function AdminDashboard() {

@@ -13,7 +13,9 @@ no responde, para que la web nunca quede en blanco).
 - **Lectura de contenido**: `lib/cms/repository.ts` (Firebase Admin, lado
   servidor). El navegador nunca lee Firestore directamente.
 - **Panel** (`app/admin/...`): login con Google, dashboard y gestores de
-  páginas, productos, medios y usuarios.
+  páginas, productos, medios, usuarios y configuración del sitio
+  (`/admin/settings`: teléfono, mensajes de WhatsApp, redes y textos del
+  footer, guardados en el doc `site/config`).
 - **Escrituras**: todas pasan por APIs internas `/api/admin/*` con validación
   Zod y verificación de rol. Auditoría en la colección `auditLogs`.
 - **Imágenes**: se suben a **Vercel Blob** directamente desde el navegador

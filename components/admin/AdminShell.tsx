@@ -15,6 +15,7 @@ const NAV = [
   { href: "/admin/products", label: "Productos" },
   { href: "/admin/media", label: "Medios" },
   { href: "/admin/users", label: "Usuarios" },
+  { href: "/admin/settings", label: "Configuración" },
 ];
 
 export function AdminShell({

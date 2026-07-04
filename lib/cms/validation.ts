@@ -71,6 +71,24 @@ export const productInputSchema = z.object({
   order: z.number().default(100),
 });
 
+export const siteConfigUpdateSchema = z.object({
+  brandName: z.string().min(1),
+  brandEyebrow: z.string().default(""),
+  phone: z
+    .string()
+    .transform((value) => value.replace(/\D/g, ""))
+    .refine((value) => value.length >= 8, "El teléfono debe tener al menos 8 dígitos."),
+  phoneDisplay: z.string().min(1),
+  links: z.object({
+    maps: z.string().url(),
+    instagram: z.string().url(),
+    facebook: z.string().url(),
+  }),
+  whatsappMessages: z.record(z.string().min(1), z.string().min(1)),
+  footerText: z.string().default(""),
+  footerSignature: z.string().default(""),
+});
+
 export const mediaInputSchema = z.object({
   name: z.string().min(1),
   storagePath: z.string().min(1),
