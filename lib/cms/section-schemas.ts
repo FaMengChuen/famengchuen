@@ -90,7 +90,7 @@ export const SECTION_SCHEMAS: Record<SectionType, FieldDef[]> = {
       label: "Modalidades",
       type: "objectList",
       itemLabel: "Modalidad",
-      itemTemplate: { ...IMG("/assets/taichi.jpg"), kicker: "", title: "", text: "" },
+      itemTemplate: { image: IMG("/assets/taichi.jpg"), kicker: "", title: "", text: "" },
       fields: [
         { key: "image", label: "Imagen", type: "image" },
         { key: "kicker", label: "Etiqueta", type: "text" },
@@ -107,7 +107,7 @@ export const SECTION_SCHEMAS: Record<SectionType, FieldDef[]> = {
       label: "Programas",
       type: "objectList",
       itemLabel: "Programa",
-      itemTemplate: { ...IMG("/assets/pamva-women.jpg"), kicker: "", title: "", subtitle: "", text: "", chips: [] },
+      itemTemplate: { image: IMG("/assets/pamva-women.jpg"), kicker: "", title: "", subtitle: "", text: "", chips: [] },
       fields: [
         { key: "image", label: "Imagen", type: "image" },
         { key: "kicker", label: "Etiqueta", type: "text" },
